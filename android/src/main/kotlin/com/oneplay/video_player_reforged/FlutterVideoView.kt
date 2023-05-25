@@ -2,20 +2,15 @@ package com.oneplay.video_player_reforged
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.SurfaceView
 import android.view.View
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.ui.PlayerControlView
-import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.oneplay.video_player_reforged.srt.SrtLiveStreamDataSourceFactory
@@ -24,6 +19,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
+
 
 class FlutterVideoView internal constructor(
     context: Context,
@@ -34,7 +30,6 @@ class FlutterVideoView internal constructor(
     private val videoView: SurfaceView
     private val methodChannel: MethodChannel
     private var player: ExoPlayer? = null
-    private val isPlaying get() = player?.isPlaying ?: false
     private val _context: Context = context
 
     override fun getView(): View {
@@ -45,7 +40,6 @@ class FlutterVideoView internal constructor(
         methodChannel = MethodChannel(messenger, "video_player_view/flutter_video_view_$id")
         // Init methodCall Listener
         methodChannel.setMethodCallHandler(this)
-
         player = ExoPlayer.Builder(context).build()
         videoView = SurfaceView(context)
         player?.setVideoSurfaceView(videoView)
@@ -53,17 +47,20 @@ class FlutterVideoView internal constructor(
 
     override fun onMethodCall(methodCall: MethodCall, result: MethodChannel.Result) {
         when (methodCall.method) {
-            "setUrl" -> setText(methodCall, result)
-            "play" -> play(methodCall, result)
-            "pause" -> pause(methodCall, result)
+            "setup" -> setup(methodCall, result)
+            "play" -> play(result)
+            "pause" -> pause(result)
             else -> result.notImplemented()
         }
     }
 
     // set and load new Url
-    private fun setText(methodCall: MethodCall, result: MethodChannel.Result ) {
+    private fun setup(methodCall: MethodCall, result: MethodChannel.Result ) {
+
         val url = methodCall.arguments as String
+
         val (value, type) = url.split("|||")
+
         val mediaSource = buildMediaSource(value, type)
         // Finally assign this media source to the player
         player?.apply {
@@ -76,12 +73,12 @@ class FlutterVideoView internal constructor(
         result.success(null)
     }
 
-    private fun play(methodCall: MethodCall, result: MethodChannel.Result ) {
+    private fun play(result: MethodChannel.Result ) {
         player?.play()
         result.success(null)
     }
 
-    private fun pause(methodCall: MethodCall, result: MethodChannel.Result ) {
+    private fun pause(result: MethodChannel.Result ) {
         player?.pause()
         result.success(null)
     }

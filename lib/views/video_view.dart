@@ -40,8 +40,8 @@ class VideoViewController {
 
   final MethodChannel _channel;
 
-  Future<void> setUrl({required String url, required String type}) async {
-    return _channel.invokeMethod('setUrl', "${url}|||$type");
+  Future<void> setup({required String url, required String type}) async {
+    return _channel.invokeMethod('setup', "${url}|||$type");
   }
 
   Future<void> play() async {
