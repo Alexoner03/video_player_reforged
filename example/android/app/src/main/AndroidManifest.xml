@@ -1,9 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.oneplay.video_player_reforged_example">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <application
         android:label="video_player_reforged_example"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:name="androidx.multidex.MultiDexApplication"
+        android:usesCleartextTraffic="true"
+        android:icon="@mipmap/ic_launcher"
+        tools:targetApi="m">
         <activity
             android:name=".MainActivity"
             android:exported="true"

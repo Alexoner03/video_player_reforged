@@ -16,7 +16,7 @@ class _VideoViewExampleState extends State<VideoViewExample> {
 
   @override
   void initState() {
-    _urlController = TextEditingController(text: 'https://flutter.dev/');
+    _urlController = TextEditingController(text: 'https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4');
     super.initState();
   }
 
@@ -29,7 +29,7 @@ class _VideoViewExampleState extends State<VideoViewExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Flutter WebView example')),
+      appBar: AppBar(title: const Text('Flutter VideView example')),
       body: Column(
         children: [
           TextFormField(
@@ -37,12 +37,34 @@ class _VideoViewExampleState extends State<VideoViewExample> {
           ),
           ElevatedButton(
             onPressed: () =>
-                _videoViewController.setUrl(url: _urlController.text),
+                _videoViewController.setUrl(url: _urlController.text, type: "MP4"),
             child: const Text('Load Url'),
           ),
-          Expanded(
+          ElevatedButton(
+            onPressed: () =>
+                _videoViewController.play(),
+            child: const Text('Play'),
+          ),
+
+          ElevatedButton(
+            onPressed: () =>
+                _videoViewController.pause(),
+            child: const Text('Pause'),
+          ),
+          ElevatedButton(
+            onPressed: () =>
+                _videoViewController.setUrl(url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8", type: "M3U8"),
+            child: const Text('Change to M3U8'),
+          ),
+          ElevatedButton(
+            onPressed: () =>
+                _videoViewController.setUrl(url: "srt://virginia2.trapemn.tv:49004", type: "SRT"),
+            child: const Text('Change to SRT'),
+          ),
+          SizedBox(
+            height: 300,
             child: VideoView(
-              onMapViewCreated: _onMapViewCreated,
+              onVideoViewCreated: _onVideoViewCreated,
             ),
           ),
         ],
@@ -51,8 +73,8 @@ class _VideoViewExampleState extends State<VideoViewExample> {
   }
 
   // load default
-  void _onMapViewCreated(VideoViewController controller) {
+  void _onVideoViewCreated(VideoViewController controller) {
     _videoViewController = controller;
-    controller.setUrl(url: _urlController.text);
+    controller.setUrl(url: _urlController.text, type: "MP4");
   }
 }

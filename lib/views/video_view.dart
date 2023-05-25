@@ -6,8 +6,8 @@ typedef FlutterWebViewCreatedCallback = void Function(
     VideoViewController controller);
 
 class VideoView extends StatelessWidget {
-  final FlutterWebViewCreatedCallback onMapViewCreated;
-  const VideoView({Key? key, required this.onMapViewCreated}) : super(key: key);
+  final FlutterWebViewCreatedCallback onVideoViewCreated;
+  const VideoView({Key? key, required this.onVideoViewCreated}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     switch (defaultTargetPlatform) {
@@ -29,7 +29,7 @@ class VideoView extends StatelessWidget {
 
   // Callback method when platform view is created
   void _onPlatformViewCreated(int id) =>
-      onMapViewCreated(VideoViewController._(id));
+      onVideoViewCreated(VideoViewController._(id));
 }
 
 // WebView Controller class to set url etc
@@ -40,7 +40,15 @@ class VideoViewController {
 
   final MethodChannel _channel;
 
-  Future<void> setUrl({required String url}) async {
-    return _channel.invokeMethod('setUrl', url);
+  Future<void> setUrl({required String url, required String type}) async {
+    return _channel.invokeMethod('setUrl', "${url}|||$type");
+  }
+
+  Future<void> play() async {
+    return _channel.invokeMethod('play');
+  }
+
+  Future<void> pause() async {
+    return _channel.invokeMethod('pause');
   }
 }
