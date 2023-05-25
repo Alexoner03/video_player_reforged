@@ -38,7 +38,7 @@ class _VideoViewExampleState extends State<VideoViewExample> {
           ElevatedButton(
             onPressed: () =>
                 _videoViewController.setUrl(url: _urlController.text, type: "MP4"),
-            child: const Text('Load Url'),
+            child: const Text('CHANGE TO MP4'),
           ),
           ElevatedButton(
             onPressed: () =>
@@ -60,6 +60,11 @@ class _VideoViewExampleState extends State<VideoViewExample> {
             onPressed: () =>
                 _videoViewController.setUrl(url: "srt://virginia2.trapemn.tv:49004", type: "SRT"),
             child: const Text('Change to SRT'),
+          ),
+          ElevatedButton(
+            onPressed: () =>
+                _videoViewController.setUrl(url: "rtmp://virginia1.trapemn.tv:31935/live/test2", type: "RTMP"),
+            child: const Text('Change to RTMP'),
           ),
           SizedBox(
             height: 300,

@@ -3,11 +3,13 @@ package com.oneplay.video_player_reforged
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.view.SurfaceView
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.ext.rtmp.RtmpDataSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -29,7 +31,7 @@ class FlutterVideoView internal constructor(
     id: Int
 ) :
     PlatformView, MethodCallHandler {
-    private val videoView: StyledPlayerView
+    private val videoView: SurfaceView
     private val methodChannel: MethodChannel
     private var player: ExoPlayer? = null
     private val isPlaying get() = player?.isPlaying ?: false
@@ -45,8 +47,8 @@ class FlutterVideoView internal constructor(
         methodChannel.setMethodCallHandler(this)
 
         player = ExoPlayer.Builder(context).build()
-        videoView = StyledPlayerView(context)
-        videoView.player = player
+        videoView = SurfaceView(context)
+        player?.setVideoSurfaceView(videoView)
     }
 
     override fun onMethodCall(methodCall: MethodCall, result: MethodChannel.Result) {
@@ -122,12 +124,6 @@ class FlutterVideoView internal constructor(
                 val replaced = uri.substring(6)
                 val (url, port) = replaced.split(":")
 
-                Log.d("debug","*****************************************")
-                Log.d("debug",url)
-                Log.d("debug",replaced)
-                Log.d("debug",port)
-                Log.d("debug","*****************************************")
-
                 return ProgressiveMediaSource.Factory(
                     SrtLiveStreamDataSourceFactory(
                         url,
@@ -135,17 +131,12 @@ class FlutterVideoView internal constructor(
                     ),
                 ).createMediaSource(MediaItem.fromUri(Uri.EMPTY))
             }
+            "RTMP" -> {
+                return ProgressiveMediaSource.Factory(RtmpDataSource.Factory())
+                    .createMediaSource(MediaItem.fromUri(Uri.parse(uri)))
+            }
             else -> {
-                val mediaItem = MediaItem.Builder()
-                    .setUri(uri)
-                    .setMimeType(MimeTypes.APPLICATION_MP4)
-                    .build()
-
-                // Create a media source and pass the media item
-                return ProgressiveMediaSource.Factory(
-                    DefaultDataSource.Factory(_context) // <- context
-                )
-                    .createMediaSource(mediaItem)
+                throw Exception("FORMAT NOT SUPPORTED")
             }
         }
 

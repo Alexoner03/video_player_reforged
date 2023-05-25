@@ -49,6 +49,7 @@ android {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
         implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
+        implementation 'com.google.android.exoplayer:extension-rtmp:2.18.7'
         implementation 'io.github.thibaultbee:srtdroid:1.5.1'
     }
 
